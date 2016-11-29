@@ -3,7 +3,7 @@ package sample;
 /**
  * Created by David on 11/12/2016.
  */
-public class Delta {
+class Delta {
     private double dragDeltaX, dragDeltaY;
 
     public double getDragDeltaY() {

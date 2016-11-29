@@ -5,9 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
+import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
@@ -60,7 +61,6 @@ public class Controller implements Initializable {
                 event1.consume();
             });
             nfaNode.setOnMouseReleased(event1 -> {
-                nfaNode.getArrow().setVisible(false);
                 if (!nfaNode.isDelete()) {
                     nfaNode.setDelete(true);
                     return;
@@ -71,56 +71,49 @@ public class Controller implements Initializable {
                     nfaNodes.get(i).renumber(i);
                 updateDFAPane();
             });
-            nfaNode.setOnDragDetected(event1 -> nfaNode.startFullDrag());
-            nfaNode.setOnMouseDragOver(event1 -> {
-                if (nfaNode.getValue() == 1)
-                    System.out.println("over " + nfaNode.getText().getText());
+
+            nfaNode.setOnDragDetected(ev -> {
+                if (!ev.isShiftDown()) return;
+                Dragboard db = nfaNode.startDragAndDrop(TransferMode.LINK);
+                ClipboardContent content = new ClipboardContent();
+                content.putString(new Integer(nfaNodes.indexOf(nfaNode)).toString());
+                db.setContent(content);
+            });
+
+            nfaNode.setOnDragOver(e -> {
+                // Only accept different nodes than the source
+                if (e.getGestureSource() != nfaNode) {
+                    String content = e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString();
+                    NFANode draggedCircle = nfaNodes.get(Integer.parseInt(content));
+                    System.out.println(draggedCircle.getText().getText() + " -> " + nfaNode.getText().getText());
+                    e.acceptTransferModes(TransferMode.ANY);
+                }
+            });
+
+            // Drag finished on a node
+            nfaNode.setOnDragDropped(e -> {
+                String content = e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString();
+                NFANode draggedCircle = nfaNodes.get(Integer.parseInt(content));
+                System.out.println("Drag completed over circle: " + nfaNode.getBoundsInParent());
+                System.out.println("Circle dragged: " + draggedCircle.getBoundsInParent());
+                draggedCircle.setTarget(nfaNode);
+                e.acceptTransferModes(TransferMode.ANY);
             });
             nfaNode.setOnMouseDragged(event1 -> {
                 circlenator.setLayoutX(event1.getSceneX() - nfaNode.getBubble().getRadiusX());
                 circlenator.setLayoutY(event1.getSceneY() - 3 * nfaNode.getBubble().getRadiusY());
+                nfaNodes.forEach(n -> n.correctArrows(event1.getX(), event1.getY()));
                 nfaNode.setDelete(false);
                 nfaNode.toFront();
                 final Point2D mouseInParent = nfaNode.localToParent(event1.getX(), event1.getY());
-                if (event1.isShiftDown()) {
-                    nfaNode.getArrow().setVisible(true);
-                    nfaNode.setArrowBounds(nfaNode.getBubble().getCenterX(), nfaNode.getBubble().getCenterY(),
-                            event1.getX(), event1.getY());
-                    return;
-                }
-                nfaNode.getArrow().setVisible(false);
                 nfaNode.setLayoutX(mouseInParent.getX() + dragDelta.getDragDeltaX());
                 nfaNode.setLayoutY(mouseInParent.getY() + dragDelta.getDragDeltaY());
             });
-
-//            nfaNode.setOnDragDetected(ev -> {
-//                // The content will be linked
-//                Dragboard db = nfaNode.startDragAndDrop(TransferMode.LINK);
-//                // Add the index of the NFANode to the DragBoard
-//                ClipboardContent content = new ClipboardContent();
-//                content.putString(new Integer(nfaNodes.indexOf(nfaNode)).toString());
-//                db.setContent(content);
-//                ev.consume();
-//            });
-//
-            // A circle is hovered while in a drag
-//            nfaNode.setOnDragOver(e -> {
-//                // Only accept different nodes than the source
-//                if (e.getGestureSource() != nfaNode) {
-//                    String content = e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString();
-//                    NFANode draggedCircle = nfaNodes.get(Integer.parseInt(content));
-//
-//                    System.out.println(draggedCircle.getText().getText() + " -> " + nfaNode.getText().getText());
-//
-//                    e.acceptTransferModes(TransferMode.ANY);
-//                }
-//                e.consume();
-//            });
         });
 
     }
 
-    public void updateDFAPane() {
+    private void updateDFAPane() {
         dfaPlacement.setRadius(Math.log(nfaNodes.size()) * 75);
         dfaPane.getChildren().removeIf(node -> node instanceof NFANode);
         final double radius = dfaPlacement.getRadius(), centerX = dfaPlacement.getLayoutX(), centerY = dfaPlacement.getLayoutY(), gap = 2 * Math.PI / (nfaNodes.size());
