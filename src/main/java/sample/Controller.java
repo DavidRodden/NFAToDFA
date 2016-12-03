@@ -102,7 +102,7 @@ public class Controller implements Initializable {
                 System.out.println("Circle dragged: " + draggedCircle.getBoundsInParent());
                 draggedCircle.setTarget(nfaNode);
                 e.acceptTransferModes(TransferMode.ANY);
-                //add connections
+                updateDFAPane();
             });
             nfaNode.setOnMouseDragged(event1 -> {
                 circlenator.setLayoutX(event1.getSceneX() - nfaNode.getBubble().getRadiusX());
