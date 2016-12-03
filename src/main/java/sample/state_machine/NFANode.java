@@ -54,6 +54,10 @@ public class NFANode extends FSMNode {
         return targetArrows.stream().map(a -> a.getTarget().getValue()).collect(Collectors.toList());
     }
 
+    public List<NFATargetArrow> getTargetArrows() {
+        return targetArrows;
+    }
+
     public void correctArrows(double currentX, double currentY) {
         targetArrows.forEach(targetArrow -> targetArrow.correctArrow(currentX, currentY, 0, 0));
     }

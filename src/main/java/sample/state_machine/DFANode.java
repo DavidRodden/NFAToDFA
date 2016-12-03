@@ -17,18 +17,21 @@ public class DFANode extends FSMNode {
     public DFANode(final double x, final double y, final List<NFANode> nfaNodes) {
         super(x, y);
         this.nfaNodes = nfaNodes;
+        targetArrows = new ArrayList<>();
         values = new ArrayList<>();
         nfaNodes.forEach(n -> values.addAll(n.getTargetValues()));
         values = values.stream().distinct().collect(Collectors.toList());
-        targetArrows = new ArrayList<>();
         final List<String> valueSet = new ArrayList<>();
         values.forEach(v -> valueSet.add("Q" + (char) ((char) v.intValue() + 8272)));
         if (nfaNodes.size() == 1 && nfaNodes.get(0).getText().equals("Ø")) setText("Ø");
         else setText("{" + nfaNodes.stream().map(FSMNode::getText).collect(Collectors.joining(",")).toString() + "}");
     }
 
-    public void addConnection(final List<DFANode> dfaNodes) {
-//        for (nfaNode.getText())
-
+    public void updateConnection(final List<DFANode> dfaNodes) {
+        targetArrows.clear();
+        for (int i = 0; i < nfaNodes.size(); i++)
+            targetArrows.add(new DFATargetArrow(this, dfaNodes.get(i)));
+        targetArrows.forEach(a -> getChildren().add(a.getArrow()));
+        System.out.println(getText() + " connects to " + targetArrows);
     }
 }

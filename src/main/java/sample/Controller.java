@@ -14,7 +14,9 @@ import sample.state_machine.DFANode;
 import sample.state_machine.NFANode;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -100,6 +102,7 @@ public class Controller implements Initializable {
                 System.out.println("Circle dragged: " + draggedCircle.getBoundsInParent());
                 draggedCircle.setTarget(nfaNode);
                 e.acceptTransferModes(TransferMode.ANY);
+                //add connections
             });
             nfaNode.setOnMouseDragged(event1 -> {
                 circlenator.setLayoutX(event1.getSceneX() - nfaNode.getBubble().getRadiusX());
@@ -120,9 +123,11 @@ public class Controller implements Initializable {
         dfaPane.getChildren().removeIf(node -> node instanceof DFANode);
         final double radius = dfaPlacement.getRadius(), centerX = dfaPlacement.getLayoutX(), centerY = dfaPlacement.getLayoutY(), gap = 2 * Math.PI / (nfaNodes.size());
         //dfaPane.getChildren().add(new NFANode(centerX + radius * Math.cos(-Math.PI / 2), centerY + radius * Math.sin(-Math.PI / 2)));
+        final List<DFANode> dfaNodes = new ArrayList<>();
         for (int i = 0; i < nfaNodes.size(); i++) {
-            dfaPane.getChildren().add(new DFANode(centerX + radius * Math.cos(-i * gap - Math.PI / 2), centerY + radius * Math.sin(-i * gap - Math.PI / 2), Arrays.asList(nfaNodes.get(i))));
-            //dfaPane.getChildren().add(new NFANode(nfaNodes.get(i).getValue(), centerX + radius * Math.cos(-(i) * gap - Math.PI / 2), centerY + radius * Math.sin(-(i) * gap - Math.PI / 2)));
+            dfaNodes.add(new DFANode(centerX + radius * Math.cos(-i * gap - Math.PI / 2), centerY + radius * Math.sin(-i * gap - Math.PI / 2), Arrays.asList(nfaNodes.get(i))));
         }
+        dfaNodes.forEach(n -> n.updateConnection(dfaNodes));
+        dfaPane.getChildren().addAll(dfaNodes);
     }
 }

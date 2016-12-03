@@ -10,11 +10,11 @@ import sample.state_machine.FSMNode;
 public abstract class TargetArrow {
     private QuadCurve arrow;
 
-    protected TargetArrow(final FSMNode current, final FSMNode target) {
+    protected TargetArrow(final FSMNode current, final FSMNode target, final int thickIdle, final int thickOver) {
         arrow = new QuadCurve();
         arrow.setFill(Color.TRANSPARENT);
         arrow.setStroke(Color.BLACK);
-        arrow.setStyle("-fx-stroke-width: 5");
+        arrow.setStyle("-fx-stroke-width: " + thickIdle);
         final double centerX = current.getBubble().getCenterX(), centerY = current.getBubble().getCenterY();
         arrow.setStartX(centerX);
         arrow.setStartY(centerY);
@@ -22,8 +22,8 @@ public abstract class TargetArrow {
         arrow.setEndY(target.getBubble().getCenterY());
         arrow.setControlX((centerX + target.getBubble().getCenterX()) / 2);
         arrow.setControlY((centerY + target.getBubble().getCenterY()) / 2);
-        arrow.setOnMouseEntered(event -> arrow.setStyle("-fx-stroke-width: 10"));
-        arrow.setOnMouseExited(event -> arrow.setStyle("-fx-stroke-width:5"));
+        arrow.setOnMouseEntered(event -> arrow.setStyle("-fx-stroke-width: " + thickOver));
+        arrow.setOnMouseExited(event -> arrow.setStyle("-fx-stroke-width: " + thickIdle));
         arrow.setVisible(true);
     }
 
