@@ -11,39 +11,37 @@ import javafx.scene.text.Text;
  */
 public class FSMNode extends Group {
     public static final Font fsmFont = Font.font("Footlight MT Light", 25);
-    private final Ellipse bubble;
+    private Ellipse bubble;
     private final Text text;
     private boolean delete;
-    private int value;
+    final double x, y;
 
-    protected FSMNode(final int value, final double x, final double y) {
-        this.value = value;
+    protected FSMNode(final double x, final double y) {
+        this.x = x;
+        this.y = y;
         delete = true;
         this.text = new Text(x, y + 5, "");
-        if (value >= 0) renumber(value);
-        else this.text.setText("Ø");
         this.text.setFont(fsmFont);
-        final double textWidth = this.text.getBoundsInLocal().getWidth();
-        bubble = new Ellipse(x, y, this.text.getBoundsInLocal().getWidth() + 5, 25);
-        this.text.setX(x - textWidth / 2);
+        bubble = new Ellipse(x, y, 0, 25);
         bubble.setStroke(Color.BLACK);
         bubble.setFill(Color.WHITE);
         getChildren().addAll(bubble, this.text);
     }
 
-    public void renumber(final int value) {
-        this.value = value;
-        final StringBuilder builder = new StringBuilder();
-        for (char c : String.valueOf(value).toCharArray()) builder.append((char) (c + 8272));
-        text.setText("Q" + builder.toString());
-    }
 
-    public int getValue() {
-        return value;
-    }
-
-    public Text getText() {
+    public Text getTextLabel() {
         return text;
+    }
+
+    public String getText() {
+        return text.getText();
+    }
+
+    protected void setText(final String text) {
+        this.text.setText(text);
+        final double textWidth = this.text.getBoundsInLocal().getWidth();
+        bubble.setRadiusX(this.text.getBoundsInLocal().getWidth()/2 + 15);
+        this.text.setX(x - textWidth / 2);
     }
 
     public Ellipse getBubble() {

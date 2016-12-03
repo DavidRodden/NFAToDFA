@@ -10,11 +10,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import sample.state_machine.FSMNode;
+import sample.state_machine.DFANode;
 import sample.state_machine.NFANode;
-import sample.target.TargetArrow;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -54,7 +54,7 @@ public class Controller implements Initializable {
             nfaPane.getChildren().add(nfaNode);
             nfaNodes.add(nfaNode);
             updateDFAPane();
-            Delta dragDelta = new Delta();
+            final Delta dragDelta = new Delta();
             nfaNode.setOnMousePressed(event1 -> {
                 final Point2D mouseInParent = nfaNode.localToParent(event1.getX(), event1.getY());
                 dragDelta.setDragDeltaX(nfaNode.getLayoutX() - mouseInParent.getX());
@@ -70,14 +70,14 @@ public class Controller implements Initializable {
                 nfaNodes.remove(nfaNode);
                 nfaPane.getChildren().remove(nfaNode);
                 for (int i = 1; i < nfaNodes.size(); i++)
-                    nfaNodes.get(i).renumber(i);
+                    nfaNodes.get(i).renumber(i - 1);
                 updateDFAPane();
             });
 
             nfaNode.setOnDragDetected(ev -> {
                 if (!ev.isShiftDown()) return;
-                Dragboard db = nfaNode.startDragAndDrop(TransferMode.LINK);
-                ClipboardContent content = new ClipboardContent();
+                final Dragboard db = nfaNode.startDragAndDrop(TransferMode.LINK);
+                final ClipboardContent content = new ClipboardContent();
                 content.putString(new Integer(nfaNodes.indexOf(nfaNode)).toString());
                 db.setContent(content);
             });
@@ -87,7 +87,7 @@ public class Controller implements Initializable {
                 if (e.getGestureSource() != nfaNode) {
                     String content = e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString();
                     NFANode draggedCircle = nfaNodes.get(Integer.parseInt(content));
-                    System.out.println(draggedCircle.getText().getText() + " -> " + nfaNode.getText().getText());
+                    System.out.println(draggedCircle.getText() + " -> " + nfaNode.getText());
                     e.acceptTransferModes(TransferMode.ANY);
                 }
             });
@@ -117,11 +117,12 @@ public class Controller implements Initializable {
 
     private void updateDFAPane() {
         dfaPlacement.setRadius(Math.log(nfaNodes.size()) * 75);
-        dfaPane.getChildren().removeIf(node -> node instanceof NFANode);
+        dfaPane.getChildren().removeIf(node -> node instanceof DFANode);
         final double radius = dfaPlacement.getRadius(), centerX = dfaPlacement.getLayoutX(), centerY = dfaPlacement.getLayoutY(), gap = 2 * Math.PI / (nfaNodes.size());
         //dfaPane.getChildren().add(new NFANode(centerX + radius * Math.cos(-Math.PI / 2), centerY + radius * Math.sin(-Math.PI / 2)));
         for (int i = 0; i < nfaNodes.size(); i++) {
-            dfaPane.getChildren().add(new NFANode(nfaNodes.get(i).getValue(), centerX + radius * Math.cos(-(i) * gap - Math.PI / 2), centerY + radius * Math.sin(-(i) * gap - Math.PI / 2)));
+            dfaPane.getChildren().add(new DFANode(centerX + radius * Math.cos(-i * gap - Math.PI / 2), centerY + radius * Math.sin(-i * gap - Math.PI / 2), Arrays.asList(nfaNodes.get(i))));
+            //dfaPane.getChildren().add(new NFANode(nfaNodes.get(i).getValue(), centerX + radius * Math.cos(-(i) * gap - Math.PI / 2), centerY + radius * Math.sin(-(i) * gap - Math.PI / 2)));
         }
     }
 }
