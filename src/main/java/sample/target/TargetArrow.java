@@ -1,17 +1,16 @@
-package sample;
+package sample.target;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.QuadCurve;
+import sample.state_machine.FSMNode;
 
 /**
  * Created by David on 11/28/2016.
  */
-public class TargetArrow {
-    private NFANode current, target;
+public abstract class TargetArrow {
     private QuadCurve arrow;
 
-    public TargetArrow(NFANode current, NFANode target) {
-        this.target = target;
+    protected TargetArrow(final FSMNode current, final FSMNode target) {
         arrow = new QuadCurve();
         arrow.setFill(Color.TRANSPARENT);
         arrow.setStroke(Color.BLACK);
@@ -26,10 +25,6 @@ public class TargetArrow {
         arrow.setOnMouseEntered(event -> arrow.setStyle("-fx-stroke-width: 10"));
         arrow.setOnMouseExited(event -> arrow.setStyle("-fx-stroke-width:5"));
         arrow.setVisible(true);
-    }
-
-    public NFANode getTarget() {
-        return target;
     }
 
     public QuadCurve getArrow() {

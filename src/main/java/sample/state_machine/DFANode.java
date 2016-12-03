@@ -1,12 +1,14 @@
-//package sample;
+//package sample.state_machine;
 //
 //import javafx.scene.Group;
 //import javafx.scene.paint.Color;
 //import javafx.scene.shape.Ellipse;
-//import javafx.scene.shape.Line;
 //import javafx.scene.shape.QuadCurve;
 //import javafx.scene.text.Font;
 //import javafx.scene.text.Text;
+//
+//import java.util.ArrayList;
+//import java.util.List;
 //
 ///**
 // * Created by David on 11/5/2016.
@@ -16,15 +18,15 @@
 //    public static final Font dfaFont = Font.font("Footlight MT Light", 25);
 //    private final Ellipse bubble;
 //    private final Text text;
-//    private final QuadCurve arrow;
+//    private final List<QuadCurve> arrows;
 //    private boolean delete;
-//    private int value;
+//    private NFANode nfaNode;
 //
-//    public DFANode(double x, double y, NFANode... nfaNodes) {
-//        this.value = value;
-//        arrow = new QuadCurve();
-//        arrow.setStyle("-fx-stroke-width: 3");
-//        arrow.setVisible(false);
+//    public DFANode(double x, double y, NFANode nfaNode) {
+//        this.nfaNode = nfaNode;
+//        arrows = new ArrayList<>();
+//        arrows.setStyle("-fx-stroke-width: 3");
+//        arrows.setVisible(false);
 //        delete = true;
 //        this.text = new Text(x, y + 5, "");
 //        if (value >= 0) renumber(value);
@@ -35,12 +37,13 @@
 //        this.text.setX(x - textWidth / 2);
 //        bubble.setStroke(Color.BLACK);
 //        bubble.setFill(Color.WHITE);
-//        getChildren().addAll(bubble, this.text, arrow);
+//        getChildren().addAll(bubble, this.text);
 //    }
 //
-//    public DFANode() {
-//        this(-1, 0, 0);
-//        setVisible(false);
+//    public void addConnection(final List<DFANode> dfaNodes) {
+//        for (nfaNode.)
+//            final QuadCurve arrow = new QuadCurve();
+//
 //    }
 //
 //    public int getValue() {
@@ -71,16 +74,16 @@
 //    }
 //
 //    public QuadCurve getArrow() {
-//        return arrow;
+//        return arrows;
 //    }
 //
 //    //    public DFANode asDFANode(){
 ////        return new DFANode()
 ////    }
 //    public void setArrowBounds(final double startX, final double startY, final double endX, final double endY) {
-//        arrow.setStartX(startX);
-//        arrow.setStartY(startY);
-//        arrow.setEndX(endX);
-//        arrow.setEndY(endY);
+//        arrows.setStartX(startX);
+//        arrows.setStartY(startY);
+//        arrows.setEndX(endX);
+//        arrows.setEndY(endY);
 //    }
 //}

@@ -5,12 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
+import sample.state_machine.FSMNode;
+import sample.state_machine.NFANode;
+import sample.target.TargetArrow;
 
 import java.net.URL;
 import java.util.ResourceBundle;
