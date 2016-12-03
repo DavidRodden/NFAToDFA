@@ -28,6 +28,7 @@ public class DFANode extends FSMNode {
     }
 
     public void updateConnection(final List<DFANode> dfaNodes) {
+        //cheeky change
         targetArrows.clear();
         for (int i = 0; i < nfaNodes.size(); i++)
             targetArrows.add(new DFATargetArrow(this, dfaNodes.get(i)));
