@@ -1,5 +1,6 @@
 package sample.state_machine;
 
+import javafx.scene.shape.Ellipse;
 import sample.target.NFATargetArrow;
 
 import java.util.ArrayList;
@@ -70,6 +71,12 @@ public class NFANode extends FSMNode {
     }
 
     public void correctArrows(double currentX, double currentY) {
-        targetArrows.forEach(targetArrow -> targetArrow.correctArrow(currentX, currentY, 0, 0));
+
+        targetArrows.forEach(a -> {
+            final NFANode nfaNode = a.getTarget();
+            final Ellipse nfaBubble = nfaNode.getBubble();
+            a.correctArrow(currentX, currentY, nfaBubble.getCenterX() + nfaNode.getLayoutX() - getLayoutX(), nfaBubble.getCenterY() + nfaNode.getLayoutY() - getLayoutY());
+            a.setArrowBack();
+        });
     }
 }

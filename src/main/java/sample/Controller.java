@@ -14,8 +14,6 @@ import javafx.scene.shape.Circle;
 import org.paukov.combinatorics3.Generator;
 import sample.state_machine.DFANode;
 import sample.state_machine.NFANode;
-import sample.target.NFATargetArrow;
-import sample.target.TargetArrow;
 
 import java.net.URL;
 import java.util.*;
@@ -109,6 +107,7 @@ public class Controller implements Initializable {
                 System.out.println("Circle dragged: " + draggedCircle.getBoundsInParent());
                 draggedCircle.setTarget(nfaNode, transitionWord.getText());
                 e.acceptTransferModes(TransferMode.ANY);
+                nfaNodes.forEach(n -> n.correctArrows(e.getX(), e.getY()));
                 updateDFAPane();
             });
             nfaNode.setOnMouseDragged(event1 -> {

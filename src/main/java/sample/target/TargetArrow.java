@@ -30,6 +30,7 @@ public abstract class TargetArrow {
         label = new Label(transitionWord);
         label.setLayoutX((arrow.getStartX() + arrow.getEndX()) / 2);
         label.setLayoutY((arrow.getStartY() + arrow.getEndY()) / 2);
+        arrow.toBack();
     }
 
     public QuadCurve getArrow() {
@@ -41,6 +42,13 @@ public abstract class TargetArrow {
         arrow.setEndY(targetY);
         arrow.setControlX((currentX + targetX) / 2);
         arrow.setControlY((currentY + targetY) / 2);
+        label.setLayoutX((arrow.getStartX() + arrow.getEndX()) / 2);
+        label.setLayoutY((arrow.getStartY() + arrow.getEndY()) / 2);
+        arrow.toBack();
+    }
+
+    public void setArrowBack() {
+        arrow.toBack();
     }
 
     public Label getLabel() {
