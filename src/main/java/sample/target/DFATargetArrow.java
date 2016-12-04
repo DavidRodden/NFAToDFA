@@ -10,7 +10,7 @@ public class DFATargetArrow extends TargetArrow {
     private DFANode current, target;
 
     public DFATargetArrow(final DFANode current, final DFANode target) {
-        super(current, target, THICK_IDLE, THICK_OVER);
+        super(current, target, THICK_IDLE, THICK_OVER, "");
         this.target = target;
     }
 

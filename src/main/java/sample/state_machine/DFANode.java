@@ -1,6 +1,5 @@
 package sample.state_machine;
 
-import javafx.scene.Node;
 import sample.target.DFATargetArrow;
 
 import java.util.ArrayList;
@@ -20,34 +19,27 @@ public class DFANode extends FSMNode {
         this.nfaNodes = nfaNodes;
         targetArrows = new ArrayList<>();
         values = nfaNodes.stream().map(NFANode::getValue).collect(Collectors.toList());
-        System.out.println(values);
-       // nfaNodes.forEach(n -> values.addAll(n.getTargetValues()));
-        //System.out.println("VALUES(1): " + values);
-        //values = values.stream().distinct().collect(Collectors.toList());
-        //System.out.println("VALUES(2): " + values);
-        //final List<String> valueSet = new ArrayList<>();
-        //values.forEach(v -> valueSet.add("Q" + (char) ((char) v.intValue() + 8272)));
         if (nfaNodes.size() == 1 && nfaNodes.get(0).getText().equals("Ø")) setText("Ø");
         else setText("{" + nfaNodes.stream().map(FSMNode::getText).collect(Collectors.joining(",")).toString() + "}");
-        System.out.println(getText() + " has values " + values);
     }
-    public boolean contains(final int value){
-        return values.contains(value);
+
+    public boolean contains(final List<Integer> values) {
+        return this.values.equals(values);
     }
+
     public void updateConnection(final List<DFANode> dfaNodes) {
+        System.out.println("examining node " + getText() + nfaNodes.stream().map(NFANode::getTargetValues).collect(Collectors.toList()));
         targetArrows.clear();
         for (int i = 0; i < nfaNodes.size(); i++) {
-            System.out.println(nfaNodes.get(i).getText() + " has target values: " + nfaNodes.get(i).getTargetValues());
-            nfaNodes.get(i).getTargetValues().forEach(v -> {
+            nfaNodes.forEach(n -> {
                 for (DFANode node : dfaNodes) {
-                    if (node != this && node.contains(v)) {
-                        System.out.println("Connected to " + node.getText());
+                    if (!node.values.isEmpty() && node.contains(n.getTargetValues())) {
+                        System.out.println("-> connect to " + node.getText());
                         targetArrows.add(new DFATargetArrow(this, node));
-                    }else System.out.println(node.getText() + " doesn't contain " + v);
+                    }
                 }
             });
         }
         targetArrows.forEach(a -> getChildren().add(a.getArrow()));
-        System.out.println(getText() + " connects to " + targetArrows.stream().map(a -> a.getTarget().getText()).collect(Collectors.toList()));
     }
 }

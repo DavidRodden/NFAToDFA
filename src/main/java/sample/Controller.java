@@ -5,19 +5,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
+import org.paukov.combinatorics3.Generator;
 import sample.state_machine.DFANode;
 import sample.state_machine.NFANode;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Controller implements Initializable {
     @FXML
@@ -25,6 +25,9 @@ public class Controller implements Initializable {
 
     @FXML
     private ImageView nfaImage;
+
+    @FXML
+    private TextField transitionWord;
 
     @FXML
     private Pane dfaPane;
@@ -100,7 +103,7 @@ public class Controller implements Initializable {
                 NFANode draggedCircle = nfaNodes.get(Integer.parseInt(content));
                 System.out.println("Drag completed over circle: " + nfaNode.getBoundsInParent());
                 System.out.println("Circle dragged: " + draggedCircle.getBoundsInParent());
-                draggedCircle.setTarget(nfaNode);
+                draggedCircle.setTarget(nfaNode, transitionWord.getText());
                 e.acceptTransferModes(TransferMode.ANY);
                 updateDFAPane();
             });
@@ -119,14 +122,15 @@ public class Controller implements Initializable {
     }
 
     private void updateDFAPane() {
-        dfaPlacement.setRadius(Math.log(nfaNodes.size()) * 75);
+        dfaPlacement.setRadius(Math.log(nfaNodes.size()) * 140);
         dfaPane.getChildren().removeIf(node -> node instanceof DFANode);
-        final double radius = dfaPlacement.getRadius(), centerX = dfaPlacement.getLayoutX(), centerY = dfaPlacement.getLayoutY(), gap = 2 * Math.PI / (nfaNodes.size());
+        final List<List<NFANode>> nfaCombinations = Generator.subset(nfaNodes.stream().filter(n -> !n.getText().equals("Ø")).collect(Collectors.toList())).simple().stream().collect(Collectors.toList());
+        final double radius = dfaPlacement.getRadius(), centerX = dfaPlacement.getLayoutX(), centerY = dfaPlacement.getLayoutY(), gap = 2 * Math.PI / (nfaCombinations.size());
         //dfaPane.getChildren().add(new NFANode(centerX + radius * Math.cos(-Math.PI / 2), centerY + radius * Math.sin(-Math.PI / 2)));
         final List<DFANode> dfaNodes = new ArrayList<>();
-        for (int i = 0; i < nfaNodes.size(); i++) {
-            dfaNodes.add(new DFANode(centerX + radius * Math.cos(-i * gap - Math.PI / 2), centerY + radius * Math.sin(-i * gap - Math.PI / 2), Arrays.asList(nfaNodes.get(i))));
-        }
+//        System.out.println("size is " + nfaCombinations.size());
+        for (int i = 0; i < nfaCombinations.size(); i++)
+            dfaNodes.add(new DFANode(centerX + radius * Math.cos(-i * gap - Math.PI / 2), centerY + radius * Math.sin(-i * gap - Math.PI / 2), nfaCombinations.get(i)));
         dfaNodes.forEach(n -> n.updateConnection(dfaNodes));
         dfaPane.getChildren().addAll(dfaNodes);
     }

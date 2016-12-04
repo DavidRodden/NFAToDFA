@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
@@ -34,6 +35,8 @@
                </children>
             </Pane>
             <ImageView fx:id="dfaImage" fitHeight="100.0" fitWidth="133.0" layoutX="365.0" layoutY="366.0" pickOnBounds="true" preserveRatio="true" />
+            <TextField fx:id="transitionWord" alignment="CENTER" layoutX="679.0" layoutY="44.0" promptText="Transition Word" />
+            <Text layoutX="585.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transition Word:" />
          </children>
       </Pane>
    </children>

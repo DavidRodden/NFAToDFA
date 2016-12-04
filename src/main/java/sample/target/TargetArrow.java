@@ -1,5 +1,6 @@
 package sample.target;
 
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.QuadCurve;
 import sample.state_machine.FSMNode;
@@ -9,8 +10,9 @@ import sample.state_machine.FSMNode;
  */
 public abstract class TargetArrow {
     private QuadCurve arrow;
+    private Label label;
 
-    protected TargetArrow(final FSMNode current, final FSMNode target, final int thickIdle, final int thickOver) {
+    protected TargetArrow(final FSMNode current, final FSMNode target, final int thickIdle, final int thickOver, final String transitionWord) {
         arrow = new QuadCurve();
         arrow.setFill(Color.TRANSPARENT);
         arrow.setStroke(Color.BLACK);
@@ -25,15 +27,23 @@ public abstract class TargetArrow {
         arrow.setOnMouseEntered(event -> arrow.setStyle("-fx-stroke-width: " + thickOver));
         arrow.setOnMouseExited(event -> arrow.setStyle("-fx-stroke-width: " + thickIdle));
         arrow.setVisible(true);
+        label = new Label(transitionWord);
+        label.setLayoutX((arrow.getStartX() + arrow.getEndX()) / 2);
+        label.setLayoutY((arrow.getStartY() + arrow.getEndY()) / 2);
     }
 
     public QuadCurve getArrow() {
         return arrow;
     }
-    public void correctArrow(double currentX, double currentY, double targetX, double targetY){
+
+    public void correctArrow(double currentX, double currentY, double targetX, double targetY) {
         arrow.setEndX(targetX);
         arrow.setEndY(targetY);
         arrow.setControlX((currentX + targetX) / 2);
         arrow.setControlY((currentY + targetY) / 2);
+    }
+
+    public Label getLabel() {
+        return label;
     }
 }

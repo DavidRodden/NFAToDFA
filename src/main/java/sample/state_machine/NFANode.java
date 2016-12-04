@@ -31,16 +31,17 @@ public class NFANode extends FSMNode {
         return value;
     }
 
-    public void setTarget(final NFANode target) {
+    public void setTarget(final NFANode target, final String transitionWord) {
         for (NFATargetArrow targetArrow : targetArrows) if (targetArrow.getTarget().equals(target)) return;
-        final NFATargetArrow targetArrow = new NFATargetArrow(this, target);
+        final NFATargetArrow targetArrow = new NFATargetArrow(this, target, transitionWord);
         targetArrow.getArrow().setOnMousePressed(event -> {
             if (event.isShiftDown()) return;
             getChildren().remove(targetArrow.getArrow());
+            getChildren().remove(targetArrow.getLabel());
             targetArrows.remove(targetArrow);
         });
         targetArrows.add(targetArrow);
-        getChildren().add(targetArrow.getArrow());
+        getChildren().addAll(targetArrow.getArrow(), targetArrow.getLabel());
     }
 
     public void renumber(final int value) {
