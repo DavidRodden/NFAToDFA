@@ -14,6 +14,8 @@ import javafx.scene.shape.Circle;
 import org.paukov.combinatorics3.Generator;
 import sample.state_machine.DFANode;
 import sample.state_machine.NFANode;
+import sample.target.NFATargetArrow;
+import sample.target.TargetArrow;
 
 import java.net.URL;
 import java.util.*;
@@ -73,6 +75,8 @@ public class Controller implements Initializable {
                     return;
                 }
                 nfaNodes.remove(nfaNode);
+                for (NFANode node : nfaNodes)
+                    node.removeArrows(node.getTargetArrows().stream().filter(a -> a.getTarget().equals(nfaNode)).collect(Collectors.toList()));
                 nfaPane.getChildren().remove(nfaNode);
                 for (int i = 1; i < nfaNodes.size(); i++)
                     nfaNodes.get(i).renumber(i - 1);

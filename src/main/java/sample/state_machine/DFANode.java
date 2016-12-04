@@ -28,13 +28,11 @@ public class DFANode extends FSMNode {
     }
 
     public void updateConnection(final List<DFANode> dfaNodes) {
-        System.out.println("examining node " + getText() + nfaNodes.stream().map(NFANode::getTargetValues).collect(Collectors.toList()));
         targetArrows.clear();
         for (int i = 0; i < nfaNodes.size(); i++) {
             nfaNodes.forEach(n -> {
                 for (DFANode node : dfaNodes) {
                     if (!node.values.isEmpty() && node.contains(n.getTargetValues())) {
-                        System.out.println("-> connect to " + node.getText());
                         targetArrows.add(new DFATargetArrow(this, node));
                     }
                 }

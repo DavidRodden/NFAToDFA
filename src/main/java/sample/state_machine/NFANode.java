@@ -44,6 +44,16 @@ public class NFANode extends FSMNode {
         getChildren().addAll(targetArrow.getArrow(), targetArrow.getLabel());
     }
 
+    public void removeArrows(List<NFATargetArrow> targetArrows) {
+        targetArrows.forEach(a -> removeArrow(a));
+    }
+
+    public void removeArrow(NFATargetArrow targetArrow) {
+        targetArrows.remove(targetArrow);
+        getChildren().remove(targetArrow.getArrow());
+        getChildren().remove(targetArrow.getLabel());
+    }
+
     public void renumber(final int value) {
         this.value = value;
         final StringBuilder builder = new StringBuilder();
