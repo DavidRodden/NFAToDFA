@@ -37,7 +37,7 @@ public class FSMNode extends Group {
         return text.getText();
     }
 
-    protected void setText(final String text) {
+    public void setText(final String text) {
         this.text.setText(text);
         final double textWidth = this.text.getBoundsInLocal().getWidth();
         bubble.setRadiusX(this.text.getBoundsInLocal().getWidth()/2 + 15);

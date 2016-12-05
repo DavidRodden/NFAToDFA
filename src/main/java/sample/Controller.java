@@ -41,6 +41,7 @@ public class Controller implements Initializable {
     @FXML
     private ImageView dfaImage;
     private ObservableList<NFANode> nfaNodes;
+    private ClipboardContent content;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -128,20 +129,10 @@ public class Controller implements Initializable {
         final double radius = dfaPlacement.getRadius(), centerX = dfaPlacement.getLayoutX(), centerY = dfaPlacement.getLayoutY(), gap = 2 * Math.PI / (nfaCombinations.size());
         //dfaPane.getChildren().add(new NFANode(centerX + radius * Math.cos(-Math.PI / 2), centerY + radius * Math.sin(-Math.PI / 2)));
         final List<DFANode> dfaNodes = new ArrayList<>();
-//        System.out.println("size is " + nfaCombinations.size());
         for (int i = 0; i < nfaCombinations.size(); i++)
             dfaNodes.add(new DFANode(centerX + radius * Math.cos(-i * gap - Math.PI / 2), centerY + radius * Math.sin(-i * gap - Math.PI / 2), nfaCombinations.get(i)));
         dfaNodes.forEach(n -> n.updateConnection(dfaNodes));
+        dfaNodes.get(0).setText("Ø");
         dfaPane.getChildren().addAll(dfaNodes);
-        dfaNodes.forEach(n -> n.getTransitionDictionary());
-//        System.out.println("------------------");
-//        dfaNodes.forEach(n -> {
-//            System.out.println(n.getText() + ": " + n.getTransitionDictionary().getTransitionEntries().size() + " -> ");
-//            n.getTransitionDictionary().getTransitionEntries().forEach(e -> {
-//                System.out.print("\t" + e.getTransitionWord() + ": ");
-//                if (e.getValues() != null) System.out.println(e.getValues().size() + " -> " + e.getValues());
-//                else System.out.println("SHIT BE NULL NIGGUH");
-//            });
-//        });
     }
 }

@@ -18,7 +18,8 @@ public class DFATransitionEntry {
     }
 
     public void add(final int value) {
-        values.add(value);
+        if (!values.contains(value))
+            values.add(value);
     }
 
     public String getTransitionWord() {

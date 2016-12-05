@@ -1,5 +1,6 @@
 package sample.state_machine;
 
+import com.sun.deploy.util.StringUtils;
 import sample.DFATransitionDictionary;
 import sample.target.DFATargetArrow;
 
@@ -24,8 +25,8 @@ public class DFANode extends FSMNode {
         else setText("{" + nfaNodes.stream().map(FSMNode::getText).collect(Collectors.joining(",")).toString() + "}");
     }
 
-    public void printValues() {
-        System.out.println(values);
+    public List<Integer> getValues() {
+        return values;
     }
 
     public boolean contains(final List<Integer> values) {
@@ -38,15 +39,38 @@ public class DFANode extends FSMNode {
 
     public void updateConnection(final List<DFANode> dfaNodes) {
         targetArrows.clear();
-        for (int i = 0; i < nfaNodes.size(); i++) {
-            nfaNodes.forEach(n -> {
-                for (DFANode node : dfaNodes) {
-                    if (!node.values.isEmpty() && node.contains(n.getTargetValues())) {
-                        targetArrows.add(new DFATargetArrow(this, node));
-                    }
+//        for (int i = 0; i < nfaNodes.size(); i++) {
+//            nfaNodes.forEach(n -> {
+//                for (DFANode node : dfaNodes) {
+//                    if (!node.values.isEmpty() && node.contains(n.getTargetValues())) {
+//                        targetArrows.add(new DFATargetArrow(this, node));
+//                    }
+//                }
+//            });
+//        }
+//        targetArrows.forEach(a -> getChildren().add(a.getArrow()));
+        final List<String> lexicon = new ArrayList<>();
+        dfaNodes.forEach(n -> n.targetArrows.forEach(a -> lexicon.addAll(a.getTransitionWords())));
+        final List<String> alphabet = lexicon.stream().distinct().collect(Collectors.toList());
+        getTransitionDictionary().getTransitionEntries().forEach(e -> {
+            if (alphabet.contains(e.getTransitionWord())) alphabet.remove(e.getTransitionWord());
+            for (DFANode node : dfaNodes) {
+                if (node.values.equals(e.getValues())) {
+                    if (!targetArrows.stream().filter(a -> a.getTarget().equals(node)).findAny().isPresent()) {
+                        DFATargetArrow dfaTargetArrow = new DFATargetArrow(this, node, e.getTransitionWord());
+                        targetArrows.add(dfaTargetArrow);   //will have to add with word attached
+                        getChildren().add(dfaTargetArrow.getArrow());
+                        getChildren().add(dfaTargetArrow.getLabel());
+                    } else
+                        targetArrows.stream().filter(a -> a.getTarget().equals(node)).findAny().get().addWord(e.getTransitionWord());
                 }
-            });
+            }
+        });
+        if (!alphabet.isEmpty()) {
+            DFATargetArrow dfaTargetArrow = new DFATargetArrow(this, dfaNodes.get(0), StringUtils.join(alphabet, ", "));
+            targetArrows.add(dfaTargetArrow);
+            getChildren().add(dfaTargetArrow.getArrow());
+            getChildren().add(dfaTargetArrow.getLabel());
         }
-        targetArrows.forEach(a -> getChildren().add(a.getArrow()));
     }
 }
