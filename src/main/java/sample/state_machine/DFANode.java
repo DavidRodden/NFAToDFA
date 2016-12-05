@@ -23,6 +23,7 @@ public class DFANode extends FSMNode {
         values = nfaNodes.stream().map(NFANode::getValue).collect(Collectors.toList());
         if (nfaNodes.size() == 1 && nfaNodes.get(0).getText().equals("Ø")) setText("Ø");
         else setText("{" + nfaNodes.stream().map(FSMNode::getText).collect(Collectors.joining(",")).toString() + "}");
+        if (nfaNodes.stream().filter(n -> n.isAccept()).findAny().isPresent()) toggleAccept();
     }
 
     public List<Integer> getValues() {
@@ -39,16 +40,6 @@ public class DFANode extends FSMNode {
 
     public void updateConnection(final List<DFANode> dfaNodes) {
         targetArrows.clear();
-//        for (int i = 0; i < nfaNodes.size(); i++) {
-//            nfaNodes.forEach(n -> {
-//                for (DFANode node : dfaNodes) {
-//                    if (!node.values.isEmpty() && node.contains(n.getTargetValues())) {
-//                        targetArrows.add(new DFATargetArrow(this, node));
-//                    }
-//                }
-//            });
-//        }
-//        targetArrows.forEach(a -> getChildren().add(a.getArrow()));
         final List<String> lexicon = new ArrayList<>();
         dfaNodes.forEach(n -> n.targetArrows.forEach(a -> lexicon.addAll(a.getTransitionWords())));
         final List<String> alphabet = lexicon.stream().distinct().collect(Collectors.toList());

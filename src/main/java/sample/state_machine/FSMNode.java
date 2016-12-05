@@ -13,7 +13,7 @@ public class FSMNode extends Group {
     public static final Font fsmFont = Font.font("Footlight MT Light", 25);
     private Ellipse bubble;
     private final Text text;
-    private boolean delete;
+    private boolean delete, accept;
     final double x, y;
 
     protected FSMNode(final double x, final double y) {
@@ -33,6 +33,14 @@ public class FSMNode extends Group {
         return text;
     }
 
+    public boolean isAccept() {
+        return accept;
+    }
+
+    public void toggleAccept() {
+        bubble.setFill((accept = !accept) ? Color.web("#ffdab9") : Color.WHITE);
+    }
+
     public String getText() {
         return text.getText();
     }
@@ -40,7 +48,7 @@ public class FSMNode extends Group {
     public void setText(final String text) {
         this.text.setText(text);
         final double textWidth = this.text.getBoundsInLocal().getWidth();
-        bubble.setRadiusX(this.text.getBoundsInLocal().getWidth()/2 + 15);
+        bubble.setRadiusX(this.text.getBoundsInLocal().getWidth() / 2 + 15);
         this.text.setX(x - textWidth / 2);
     }
 

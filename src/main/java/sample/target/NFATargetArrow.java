@@ -15,7 +15,7 @@ public class NFATargetArrow extends TargetArrow {
     private List<String> transitionWords;
 
     public NFATargetArrow(final NFANode current, final NFANode target, final String transitionWord) {
-        super(current, target, THICK_IDLE, THICK_OVER, transitionWord);
+        super(current, target, THICK_IDLE, THICK_OVER, transitionWord.isEmpty() ? "ε" : transitionWord);
         this.target = target;
         transitionWords = Arrays.asList(transitionWord.split(",")).stream().map(String::trim).collect(Collectors.toList());
     }

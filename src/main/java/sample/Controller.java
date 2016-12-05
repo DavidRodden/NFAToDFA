@@ -2,9 +2,12 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,6 +18,9 @@ import org.paukov.combinatorics3.Generator;
 import sample.state_machine.DFANode;
 import sample.state_machine.NFANode;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,6 +43,8 @@ public class Controller implements Initializable {
 
     @FXML
     private Circle circlenator;
+    @FXML
+    private Button snapshotButton;
 
     @FXML
     private ImageView dfaImage;
@@ -59,9 +67,14 @@ public class Controller implements Initializable {
             final NFANode nfaNode = new NFANode(nfaNodes.size() - 1, event.getX(), event.getY());
             nfaPane.getChildren().add(nfaNode);
             nfaNodes.add(nfaNode);
-            updateDFAPane();
             final Delta dragDelta = new Delta();
             nfaNode.setOnMousePressed(event1 -> {
+                if (event1.isControlDown()) {
+                    nfaNode.toggleAccept();
+                    updateDFAPane();
+                    event1.consume();
+                    return;
+                }
                 final Point2D mouseInParent = nfaNode.localToParent(event1.getX(), event1.getY());
                 dragDelta.setDragDeltaX(nfaNode.getLayoutX() - mouseInParent.getX());
                 dragDelta.setDragDeltaY(nfaNode.getLayoutY() - mouseInParent.getY());
@@ -69,6 +82,7 @@ public class Controller implements Initializable {
                 event1.consume();
             });
             nfaNode.setOnMouseReleased(event1 -> {
+                if (event1.isControlDown()) return;
                 if (!nfaNode.isDelete()) {
                     nfaNode.setDelete(true);
                     return;
@@ -83,7 +97,7 @@ public class Controller implements Initializable {
             });
 
             nfaNode.setOnDragDetected(ev -> {
-                if (!ev.isShiftDown()) return;
+                if (!ev.isShiftDown() || ev.isControlDown()) return;
                 final Dragboard db = nfaNode.startDragAndDrop(TransferMode.LINK);
                 final ClipboardContent content = new ClipboardContent();
                 content.putString(new Integer(nfaNodes.indexOf(nfaNode)).toString());
@@ -103,12 +117,13 @@ public class Controller implements Initializable {
             nfaNode.setOnDragDropped(e -> {
                 String content = e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString();
                 NFANode draggedCircle = nfaNodes.get(Integer.parseInt(content));
-                draggedCircle.setTarget(nfaNode, transitionWord.getText());
+                draggedCircle.setTarget(this, nfaNode, transitionWord.getText());
                 e.acceptTransferModes(TransferMode.ANY);
                 nfaNodes.forEach(n -> n.correctArrows(e.getX(), e.getY(), nfaNode));
                 updateDFAPane();
             });
             nfaNode.setOnMouseDragged(event1 -> {
+                if (event1.isControlDown()) return;
                 circlenator.setLayoutX(event1.getSceneX() - nfaNode.getBubble().getRadiusX());
                 circlenator.setLayoutY(event1.getSceneY() - 3 * nfaNode.getBubble().getRadiusY());
                 nfaNodes.forEach(n -> n.correctArrows(event1.getX(), event1.getY(), nfaNode));
@@ -118,11 +133,18 @@ public class Controller implements Initializable {
                 nfaNode.setLayoutX(mouseInParent.getX() + dragDelta.getDragDeltaX());
                 nfaNode.setLayoutY(mouseInParent.getY() + dragDelta.getDragDeltaY());
             });
+            updateDFAPane();
         });
-
+        snapshotButton.setOnMouseClicked(event -> {
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(dfaPane.snapshot(new SnapshotParameters(), null), null), "png", new File("pic.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private void updateDFAPane() {
+    public void updateDFAPane() {
         dfaPlacement.setRadius(Math.log(nfaNodes.size()) * 140);
         dfaPane.getChildren().removeIf(node -> node instanceof DFANode);
         final List<List<NFANode>> nfaCombinations = Generator.subset(nfaNodes.stream().filter(n -> !n.getText().equals("Ø")).collect(Collectors.toList())).simple().stream().collect(Collectors.toList());

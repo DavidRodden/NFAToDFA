@@ -1,6 +1,7 @@
 package sample.state_machine;
 
 import javafx.scene.shape.Ellipse;
+import sample.Controller;
 import sample.target.NFATargetArrow;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class NFANode extends FSMNode {
         return value;
     }
 
-    public void setTarget(final NFANode target, final String transitionWord) {
+    public void setTarget(Controller controller, final NFANode target, final String transitionWord) {
         for (NFATargetArrow targetArrow : targetArrows) if (targetArrow.getTarget().equals(target)) return;
         final NFATargetArrow targetArrow = new NFATargetArrow(this, target, transitionWord);
         targetArrow.getArrow().setOnMousePressed(event -> {
@@ -40,6 +41,7 @@ public class NFANode extends FSMNode {
             getChildren().remove(targetArrow.getArrow());
             getChildren().remove(targetArrow.getLabel());
             targetArrows.remove(targetArrow);
+            controller.updateDFAPane();
         });
         targetArrows.add(targetArrow);
         getChildren().addAll(targetArrow.getArrow(), targetArrow.getLabel());
