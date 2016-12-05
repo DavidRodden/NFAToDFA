@@ -32,6 +32,7 @@
                </effect>
                <children>
                   <Circle fx:id="dfaPlacement" fill="WHITE" layoutX="395.0" layoutY="264.0" radius="165.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Text fx:id="alphabet" layoutX="581.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Alphabet: N/A" />
                </children>
             </Pane>
             <ImageView fx:id="dfaImage" fitHeight="100.0" fitWidth="133.0" layoutX="365.0" layoutY="366.0" pickOnBounds="true" preserveRatio="true" />

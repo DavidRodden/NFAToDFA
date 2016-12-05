@@ -24,6 +24,7 @@ public class FSMNode extends Group {
         this.text.setFont(fsmFont);
         bubble = new Ellipse(x, y, 0, 25);
         bubble.setStroke(Color.BLACK);
+        bubble.setStrokeWidth(2);
         bubble.setFill(Color.WHITE);
         getChildren().addAll(bubble, this.text);
     }

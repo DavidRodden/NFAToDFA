@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * Created by David on 12/2/2016.
  */
 public class NFATargetArrow extends TargetArrow {
-    public static final int THICK_IDLE = 3, THICK_OVER = 6;
+    public static final int THICK_IDLE = 4, THICK_OVER = 6;
     private NFANode current, target;
     private List<String> transitionWords;
 

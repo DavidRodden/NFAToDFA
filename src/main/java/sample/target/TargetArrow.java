@@ -44,10 +44,14 @@ public abstract class TargetArrow {
         (self ? selfArrow : arrow).setOnMouseEntered(event -> {
             (self ? selfArrow : arrow).setStyle("-fx-stroke-width: " + thickOver);
             label.setStyle("-fx-text-fill: red; -fx-font-size: 25");
+            current.getBubble().setStroke(Color.LAWNGREEN);
+            target.getBubble().setStroke(Color.RED);
         });
         (self ? selfArrow : arrow).setOnMouseExited(event -> {
             (self ? selfArrow : arrow).setStyle("-fx-stroke-width: " + thickIdle);
             label.setStyle("-fx-text-fill: black; -fx-font-size: 20");
+            current.getBubble().setStroke(Color.BLACK);
+            target.getBubble().setStroke(Color.BLACK);
         });
         (self ? selfArrow : arrow).setVisible(true);
         (self ? selfArrow : arrow).toBack();

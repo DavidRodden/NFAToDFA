@@ -64,4 +64,8 @@ public class DFANode extends FSMNode {
             getChildren().add(dfaTargetArrow.getLabel());
         }
     }
+
+    public List<DFATargetArrow> getTargetArrows() {
+        return targetArrows;
+    }
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * Created by David on 12/2/2016.
  */
 public class DFATargetArrow extends TargetArrow {
-    public static final int THICK_IDLE = 2, THICK_OVER = 4;
+    public static final int THICK_IDLE = 3, THICK_OVER = 6;
     private DFANode current, target;
     private List<String> transitionWords;
 

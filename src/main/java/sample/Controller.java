@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.deploy.util.StringUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -14,9 +15,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import org.paukov.combinatorics3.Generator;
 import sample.state_machine.DFANode;
 import sample.state_machine.NFANode;
+import sample.target.DFATargetArrow;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -45,6 +48,9 @@ public class Controller implements Initializable {
     private Circle circlenator;
     @FXML
     private Button snapshotButton;
+
+    @FXML
+    private Text alphabet;
 
     @FXML
     private ImageView dfaImage;
@@ -156,5 +162,10 @@ public class Controller implements Initializable {
         dfaNodes.forEach(n -> n.updateConnection(dfaNodes));
         dfaNodes.get(0).setText("Ø");
         dfaPane.getChildren().addAll(dfaNodes);
+        final List<String> lexicon = new ArrayList<>();
+        dfaNodes.forEach(n -> n.getTargetArrows().forEach(a -> lexicon.addAll(a.getTransitionWords())));
+        final String currentAlphabet = StringUtils.join(lexicon.stream().filter(s -> !s.isEmpty()).distinct().collect(Collectors.toList()), ",");
+        alphabet.setText("Alphabet: " + (currentAlphabet.isEmpty() ? "N/A" : currentAlphabet));
+
     }
 }
