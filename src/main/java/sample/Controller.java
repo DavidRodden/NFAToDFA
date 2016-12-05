@@ -94,7 +94,6 @@ public class Controller implements Initializable {
                 if (e.getGestureSource() != nfaNode) {
                     String content = e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString();
                     NFANode draggedCircle = nfaNodes.get(Integer.parseInt(content));
-                    System.out.println(draggedCircle.getText() + " -> " + nfaNode.getText());
                     e.acceptTransferModes(TransferMode.ANY);
                 }
             });
@@ -103,17 +102,15 @@ public class Controller implements Initializable {
             nfaNode.setOnDragDropped(e -> {
                 String content = e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString();
                 NFANode draggedCircle = nfaNodes.get(Integer.parseInt(content));
-                System.out.println("Drag completed over circle: " + nfaNode.getBoundsInParent());
-                System.out.println("Circle dragged: " + draggedCircle.getBoundsInParent());
                 draggedCircle.setTarget(nfaNode, transitionWord.getText());
                 e.acceptTransferModes(TransferMode.ANY);
-                nfaNodes.forEach(n -> n.correctArrows(e.getX(), e.getY()));
+                nfaNodes.forEach(n -> n.correctArrows(e.getX(), e.getY(), nfaNode));
                 updateDFAPane();
             });
             nfaNode.setOnMouseDragged(event1 -> {
                 circlenator.setLayoutX(event1.getSceneX() - nfaNode.getBubble().getRadiusX());
                 circlenator.setLayoutY(event1.getSceneY() - 3 * nfaNode.getBubble().getRadiusY());
-                nfaNodes.forEach(n -> n.correctArrows(event1.getX(), event1.getY()));
+                nfaNodes.forEach(n -> n.correctArrows(event1.getX(), event1.getY(), nfaNode));
                 nfaNode.setDelete(false);
                 nfaNode.toFront();
                 final Point2D mouseInParent = nfaNode.localToParent(event1.getX(), event1.getY());
@@ -136,5 +133,15 @@ public class Controller implements Initializable {
             dfaNodes.add(new DFANode(centerX + radius * Math.cos(-i * gap - Math.PI / 2), centerY + radius * Math.sin(-i * gap - Math.PI / 2), nfaCombinations.get(i)));
         dfaNodes.forEach(n -> n.updateConnection(dfaNodes));
         dfaPane.getChildren().addAll(dfaNodes);
+        dfaNodes.forEach(n -> n.getTransitionDictionary());
+//        System.out.println("------------------");
+//        dfaNodes.forEach(n -> {
+//            System.out.println(n.getText() + ": " + n.getTransitionDictionary().getTransitionEntries().size() + " -> ");
+//            n.getTransitionDictionary().getTransitionEntries().forEach(e -> {
+//                System.out.print("\t" + e.getTransitionWord() + ": ");
+//                if (e.getValues() != null) System.out.println(e.getValues().size() + " -> " + e.getValues());
+//                else System.out.println("SHIT BE NULL NIGGUH");
+//            });
+//        });
     }
 }

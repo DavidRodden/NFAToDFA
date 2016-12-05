@@ -4,6 +4,7 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.QuadCurve;
 import sample.state_machine.FSMNode;
+import sample.state_machine.NFANode;
 
 /**
  * Created by David on 11/28/2016.
@@ -37,14 +38,15 @@ public abstract class TargetArrow {
         return arrow;
     }
 
-    public void correctArrow(double currentX, double currentY, double targetX, double targetY) {
+    public void correctArrow(double currentX, double currentY, double targetX, double targetY, boolean draggingCurrentNode) {
         arrow.setEndX(targetX);
         arrow.setEndY(targetY);
-        arrow.setControlX((currentX + targetX) / 2);
-        arrow.setControlY((currentY + targetY) / 2);
         label.setLayoutX((arrow.getStartX() + arrow.getEndX()) / 2);
         label.setLayoutY((arrow.getStartY() + arrow.getEndY()) / 2);
         arrow.toBack();
+        if (!draggingCurrentNode) return;
+        arrow.setControlX((currentX + targetX) / 2);
+        arrow.setControlY((currentY + targetY) / 2);
     }
 
     public void setArrowBack() {

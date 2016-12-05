@@ -70,12 +70,11 @@ public class NFANode extends FSMNode {
         return targetArrows;
     }
 
-    public void correctArrows(double currentX, double currentY) {
-
+    public void correctArrows(double currentX, double currentY, NFANode currentNode) {
         targetArrows.forEach(a -> {
             final NFANode nfaNode = a.getTarget();
             final Ellipse nfaBubble = nfaNode.getBubble();
-            a.correctArrow(currentX, currentY, nfaBubble.getCenterX() + nfaNode.getLayoutX() - getLayoutX(), nfaBubble.getCenterY() + nfaNode.getLayoutY() - getLayoutY());
+            a.correctArrow(currentX, currentY, nfaBubble.getCenterX() + nfaNode.getLayoutX() - getLayoutX(), nfaBubble.getCenterY() + nfaNode.getLayoutY() - getLayoutY(), this == currentNode);
             a.setArrowBack();
         });
     }

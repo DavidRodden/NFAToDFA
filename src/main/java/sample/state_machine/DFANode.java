@@ -1,5 +1,6 @@
 package sample.state_machine;
 
+import sample.DFATransitionDictionary;
 import sample.target.DFATargetArrow;
 
 import java.util.ArrayList;
@@ -23,8 +24,16 @@ public class DFANode extends FSMNode {
         else setText("{" + nfaNodes.stream().map(FSMNode::getText).collect(Collectors.joining(",")).toString() + "}");
     }
 
+    public void printValues() {
+        System.out.println(values);
+    }
+
     public boolean contains(final List<Integer> values) {
         return this.values.equals(values);
+    }
+
+    public DFATransitionDictionary getTransitionDictionary() {
+        return new DFATransitionDictionary(nfaNodes);
     }
 
     public void updateConnection(final List<DFANode> dfaNodes) {
